@@ -91,32 +91,67 @@
     .receipt-amount { margin: 8px 0; padding: 7px 3px; border: 1.5px solid #000; text-align: center; }
     .receipt-amount .caption { font-size: 8px; font-weight: 700; }
     .receipt-amount .money { font-family: Arial, sans-serif; font-size: 21px; font-weight: 900; margin-top: 2px; }
-    .receipt-marks { border: 1.5px solid #000; padding: 5px 4px 4px; margin: 5px 0 6px; }
-    .receipt-marks-title { text-align: center; font-size: 9px; font-weight: 900; letter-spacing: .04em; }
-    .receipt-marks-rule { text-align: center; font-size: 7px; margin-top: 1px; }
-    .mark-grid { --boxes-per-row: 5; display: grid; grid-template-columns: repeat(var(--boxes-per-row), max-content); justify-content: center; gap: 2px; margin: 4px auto 0; width: fit-content; max-width: 100%; }
-    .mark-box { width: 8px; height: 8px; border: 1px solid #000; display: grid; place-items: center; font-family: Arial, sans-serif; font-size: 8px; font-weight: 900; line-height: 1; background: #fff; color: #000; position: relative; }
-    .mark-box.marked::after { content: "✓"; }
-    .mark-box.partial { background: linear-gradient(135deg, #000 0 var(--partial-fill), #fff var(--partial-fill) 100%); }
-    .mark-box.partial::after { content: "P"; color: #fff; font-size: 7px; text-shadow: 0 0 1px #000; }
-    .receipt-marks-summary { text-align: center; font-size: 8px; font-weight: 800; margin-top: 6px; }
+    .receipt-marks { border: 1px solid #000; padding: 4px 3px 3px; margin: 4px 0 5px; }
+    .receipt-marks-title { text-align: center; font-size: 8.2px; font-weight: 900; letter-spacing: .03em; }
+    .receipt-marks-meta { text-align: center; font-size: 6.5px; line-height: 1.15; margin-top: 1px; }
+    .receipt-marks-meta div + div { margin-top: 1px; }
+    .mark-grid {
+      --boxes-per-row: 10;
+      display: grid;
+      grid-template-columns: repeat(var(--boxes-per-row), minmax(0, 1fr));
+      gap: 1px;
+      margin: 3px auto 0;
+      width: 100%;
+    }
+    .mark-box {
+      min-width: 0;
+      height: 12px;
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1px;
+      font-family: "Courier New", ui-monospace, monospace;
+      font-size: var(--mark-font-size, 5.3px);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .mark-box-label {
+      position: relative;
+      z-index: 1;
+      white-space: nowrap;
+      letter-spacing: -.02em;
+    }
+    .mark-box.marked::after {
+      content: "\2713";
+      position: absolute;
+      top: -1px;
+      right: 1px;
+      font-size: 6.4px;
+      font-weight: 900;
+      line-height: 1;
+      background: #fff;
+      padding-left: 1px;
+    }
+    .mark-box.partial::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, transparent 0 60%, #000 60% 66%, transparent 66% 100%),
+        linear-gradient(135deg, rgba(0, 0, 0, .16) 0 var(--partial-fill), transparent var(--partial-fill) 100%);
+    }
+    .receipt-marks-summary { text-align: center; font-size: 6.6px; font-weight: 800; margin-top: 3px; }
     .receipt-qr { display: flex; justify-content: center; margin: 7px auto 4px; }
     .receipt-qr canvas, .receipt-qr img { width: 28mm !important; height: 28mm !important; image-rendering: pixelated; }
     .receipt-center { text-align: center; }
     .receipt-small { font-size: 7.8px; }
     .receipt-copy-badge { text-align: center; border: 1px solid #000; padding: 2px 5px; margin: 0 auto 5px; width: fit-content; font-weight: 800; display: none; }
     .receipt-copy-badge.show { display: block; }
-    .mark-box.marked::after { content: "\2713"; transform: translateY(-.2px); }
-    .mark-box.partial { background: #fff; }
-    .mark-box.partial::after { content: none; }
-    .mark-box.partial::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, transparent 0 56%, #000 56% 66%, transparent 66% 100%),
-        linear-gradient(135deg, rgba(0, 0, 0, .18) 0 var(--partial-fill), transparent var(--partial-fill) 100%);
-    }
     .print-anim-panel { margin-top: 12px; border: 1px solid #dbe5f4; border-radius: 14px; background: linear-gradient(180deg, #ffffff, #f5f8fc); padding: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); display: none; }
     .print-anim-panel.show { display: block; }
     .print-anim-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
@@ -134,10 +169,12 @@
     .mini-line.short { width: 58%; }
     .mini-line.mid { width: 74%; }
     .mini-qr { width: 18px; height: 18px; margin: 8px auto 7px; background: linear-gradient(90deg, #111 50%, transparent 50%) 0 0 / 6px 6px, linear-gradient(#111 50%, transparent 50%) 0 0 / 6px 6px; outline: 1px solid #111; }
-    .mini-mark-row { display: flex; justify-content: center; gap: 2px; }
-    .mini-mark-box { width: 7px; height: 7px; border: 1px solid #111; background: #fff; }
+    .mini-mark-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; margin: 0 auto; width: 64px; }
+    .mini-mark-box { height: 4px; border: 1px solid #111; background: #fff; }
     .mini-mark-box.marked { position: relative; }
-    .mini-mark-box.marked::after { content: ""; position: absolute; left: 1px; top: 2px; width: 4px; height: 2px; border-left: 1px solid #111; border-bottom: 1px solid #111; transform: rotate(-45deg); }
+    .mini-mark-box.marked::after { content: ""; position: absolute; right: 0; top: 0; width: 2px; height: 1px; border-left: 1px solid #111; border-bottom: 1px solid #111; transform: rotate(-45deg); transform-origin: center; }
+    .mini-mark-box.partial { position: relative; overflow: hidden; }
+    .mini-mark-box.partial::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 0 55%, #111 55% 66%, transparent 66% 100%), linear-gradient(135deg, rgba(0, 0, 0, .2) 0 var(--partial-fill), transparent var(--partial-fill) 100%); }
     .print-progress { margin-top: 8px; }
     .print-progress-bar { height: 7px; border-radius: 999px; background: #dbe4f0; overflow: hidden; }
     .print-progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #2563eb, #0ea5e9); transition: width .12s linear; }
@@ -450,10 +487,16 @@
                 </div>
 
                 <section id="receiptMarksSection" class="receipt-marks">
-                  <div class="receipt-marks-title">DIGITAL CARD MARKS</div>
-                  <div id="rMarkRule" class="receipt-marks-rule">1 box = GHS 2.00 · 5 boxes = GHS 10.00</div>
+                  <div class="receipt-marks-title">DIGITAL PRODUCT CARD</div>
+                  <div id="rMarkMeta" class="receipt-marks-meta">
+                    <div>Product total: GHS 0.00</div>
+                    <div>Box value: GHS 0.00</div>
+                    <div>Marked: 0 / 0</div>
+                    <div>Unmarked: 0</div>
+                    <div>B = Box</div>
+                  </div>
                   <div id="rMarkGrid" class="mark-grid" aria-label="Digitally marked payment boxes"></div>
-                  <div id="rMarkedBoxSummary" class="receipt-marks-summary">0 boxes marked</div>
+                  <div id="rMarkedBoxSummary" class="receipt-marks-summary">0 boxes marked · 0 boxes unmarked</div>
                 </section>
 
                 <div class="receipt-row"><span class="key">Previously paid:</span><span id="rPreviouslyPaid" class="val">GHS 0.00</span></div>
@@ -511,13 +554,7 @@
                             <div class="mini-line"></div>
                             <div class="mini-line mid"></div>
                             <div class="mini-qr"></div>
-                            <div class="mini-mark-row">
-                              <span class="mini-mark-box marked"></span>
-                              <span class="mini-mark-box marked"></span>
-                              <span class="mini-mark-box marked"></span>
-                              <span class="mini-mark-box"></span>
-                              <span class="mini-mark-box"></span>
-                            </div>
+                            <div id="miniMarkGrid" class="mini-mark-grid" aria-hidden="true"></div>
                           </div>
                         </div>
                         <div class="mini-printer-slot"></div>
@@ -817,113 +854,186 @@
         return `${left}\n${wrapText(right, width).map((line) => line.padStart(Math.min(width, line.length + 2))).join("\n")}`;
       }
 
-      function getMarkingStats(amount, cardValue, boxValue) {
-        const safeCardValue = Math.max(Number(cardValue) || 0, .01);
+      function getMarkFontSize(totalBoxes) {
+        const digits = String(Math.max(1, totalBoxes)).length;
+        if (digits >= 4) return "4.4px";
+        if (digits === 3) return "4.8px";
+        return "5.3px";
+      }
+
+      function compactBoxLabel(index) {
+        return `B${index}`;
+      }
+
+      function getMarkingStats(productTotal, totalPaid, boxValue) {
+        const safeProductTotal = Math.max(Number(productTotal) || 0, .01);
         const safeBoxValue = Math.max(Number(boxValue) || 0, .01);
-        const boxesPerRow = Math.max(1, Math.round(safeCardValue / safeBoxValue));
-        const fullBoxes = Math.floor((Number(amount) + 1e-8) / safeBoxValue);
-        const remainderValue = Math.max(0, Number(amount) - fullBoxes * safeBoxValue);
-        const partialRatio = remainderValue > .005 ? Math.min(1, remainderValue / safeBoxValue) : 0;
-        const occupiedBoxes = fullBoxes + (partialRatio > 0 ? 1 : 0);
-        const rows = Math.max(1, Math.ceil(occupiedBoxes / boxesPerRow));
+        const totalBoxes = Math.max(1, Math.round(safeProductTotal / safeBoxValue));
+        const clampedTotalPaid = Math.min(Math.max(Number(totalPaid) || 0, 0), totalBoxes * safeBoxValue);
+        const rawMarkedBoxes = clampedTotalPaid / safeBoxValue;
+        const fullBoxes = Math.min(totalBoxes, Math.floor(rawMarkedBoxes + 1e-8));
+        const remainderValue = Math.max(0, clampedTotalPaid - fullBoxes * safeBoxValue);
+        const hasPartial = remainderValue > .005 && fullBoxes < totalBoxes;
+        const partialRatio = hasPartial ? Math.min(1, remainderValue / safeBoxValue) : 0;
+        const boxesPerRow = 10;
+        const rows = Math.max(1, Math.ceil(totalBoxes / boxesPerRow));
         return {
-          cardValue: safeCardValue,
+          productTotal: safeProductTotal,
+          totalPaid: clampedTotalPaid,
           boxValue: safeBoxValue,
           boxesPerRow,
+          totalBoxes,
           fullBoxes,
           remainderValue,
           partialRatio,
-          occupiedBoxes,
+          markedBoxes: fullBoxes + (hasPartial ? 1 : 0),
+          unmarkedBoxes: totalBoxes - fullBoxes - (hasPartial ? 1 : 0),
           rows,
-          totalSlots: rows * boxesPerRow
+          totalSlots: totalBoxes
         };
       }
 
       function markingSummary(stats) {
         const fullLabel = `${stats.fullBoxes} ${stats.fullBoxes === 1 ? "box" : "boxes"} marked`;
-        if (!stats.partialRatio) return fullLabel;
-        return `${fullLabel} + 1 partial box (GHS ${money(stats.remainderValue)})`;
+        const partialLabel = stats.partialRatio ? ` + 1 partial box (GHS ${money(stats.remainderValue)})` : "";
+        return `${fullLabel}${partialLabel} · ${stats.unmarkedBoxes} boxes unmarked`;
+      }
+
+      function markedRatioLabel(stats) {
+        return stats.partialRatio ? `${stats.fullBoxes} + partial / ${stats.totalBoxes}` : `${stats.fullBoxes} / ${stats.totalBoxes}`;
+      }
+
+      function updateMarkMeta(stats) {
+        const holder = el("rMarkMeta");
+        const lines = [
+          `Product total: GHS ${money(stats.productTotal)}`,
+          `Box value: GHS ${money(stats.boxValue)}`,
+          `Marked: ${markedRatioLabel(stats)}`,
+          `Unmarked: ${stats.unmarkedBoxes}`,
+          "B = Box"
+        ];
+        holder.replaceChildren(...lines.map((line) => {
+          const row = document.createElement("div");
+          row.textContent = line;
+          return row;
+        }));
+      }
+
+      function renderMiniMarkGrid(stats) {
+        const grid = el("miniMarkGrid");
+        if (!grid) return;
+        grid.replaceChildren();
+        const fragment = document.createDocumentFragment();
+        const previewCount = Math.min(stats.totalBoxes, 30);
+        for (let index = 0; index < previewCount; index += 1) {
+          const cell = document.createElement("span");
+          cell.className = "mini-mark-box";
+          if (index < stats.fullBoxes) {
+            cell.classList.add("marked");
+          } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
+            cell.classList.add("partial");
+            cell.style.setProperty("--partial-fill", `${Math.round(stats.partialRatio * 100)}%`);
+          }
+          fragment.appendChild(cell);
+        }
+        grid.replaceChildren(fragment);
       }
 
       function renderMarkGrid(receipt) {
         const section = el("receiptMarksSection");
         section.classList.toggle("d-none", receipt.susuMode);
-        if (receipt.susuMode) return;
+        if (receipt.susuMode) {
+          renderMiniMarkGrid({ totalBoxes: 0, fullBoxes: 0, partialRatio: 0 });
+          return;
+        }
 
         const stats = receipt.marking;
         const grid = el("rMarkGrid");
         grid.replaceChildren();
+        updateMarkMeta(stats);
         grid.style.setProperty("--boxes-per-row", String(stats.boxesPerRow));
+        grid.style.setProperty("--mark-font-size", getMarkFontSize(stats.totalBoxes));
+        const fragment = document.createDocumentFragment();
         for (let index = 0; index < stats.totalSlots; index += 1) {
           const box = document.createElement("span");
           box.className = "mark-box";
+          box.title = `Box ${index + 1}`;
+          box.setAttribute("aria-label", `Box ${index + 1}`);
+          const label = document.createElement("span");
+          label.className = "mark-box-label";
+          label.textContent = compactBoxLabel(index + 1);
+          box.appendChild(label);
           if (index < stats.fullBoxes) {
             box.classList.add("marked");
-            box.setAttribute("aria-label", `Marked box ${index + 1}`);
           } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
             box.classList.add("partial");
             box.style.setProperty("--partial-fill", `${Math.round(stats.partialRatio * 100)}%`);
-            box.setAttribute("aria-label", `Partially marked box worth GHS ${money(stats.remainderValue)}`);
-          } else {
-            box.setAttribute("aria-label", `Unmarked box ${index + 1}`);
           }
-          grid.appendChild(box);
+          fragment.appendChild(box);
         }
-        setText("rMarkRule", `1 box = GHS ${money(stats.boxValue)} · ${stats.boxesPerRow} boxes = GHS ${money(stats.cardValue)}`);
+        grid.appendChild(fragment);
         setText("rMarkedBoxSummary", markingSummary(stats));
+        renderMiniMarkGrid(stats);
       }
 
       function createMarkGridCanvas(stats) {
-        const width = 216;
-        const sidePadding = 4;
-        const gap = 2;
-        const cellSize = Math.max(12, Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow));
-        const gridWidth = cellSize * stats.boxesPerRow + gap * (stats.boxesPerRow - 1);
-        const gridHeight = cellSize * stats.rows + gap * (stats.rows - 1);
+        const width = 360;
+        const sidePadding = 0;
+        const gap = 1;
+        const cellWidth = Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow);
+        const cellHeight = 11;
+        const gridWidth = cellWidth * stats.boxesPerRow + gap * (stats.boxesPerRow - 1);
+        const gridHeight = cellHeight * stats.rows + gap * (stats.rows - 1);
         const canvas = document.createElement("canvas");
         canvas.width = width;
-        canvas.height = gridHeight + 8;
+        canvas.height = gridHeight + 2;
         const context = canvas.getContext("2d");
         context.fillStyle = "#ffffff";
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.strokeStyle = "#000000";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
 
         const startX = Math.floor((width - gridWidth) / 2);
-        const startY = 4;
+        const startY = 1;
+        const labelFont = String(Math.max(1, stats.totalBoxes)).length >= 4 ? 5 : String(Math.max(1, stats.totalBoxes)).length === 3 ? 6 : 7;
         for (let index = 0; index < stats.totalSlots; index += 1) {
           const row = Math.floor(index / stats.boxesPerRow);
           const column = index % stats.boxesPerRow;
-          const x = startX + column * (cellSize + gap);
-          const y = startY + row * (cellSize + gap);
-          context.lineWidth = 1.4;
-          context.strokeRect(x, y, cellSize, cellSize);
+          const x = startX + column * (cellWidth + gap);
+          const y = startY + row * (cellHeight + gap);
+          context.lineWidth = 1;
+          context.strokeRect(x + .5, y + .5, cellWidth - 1, cellHeight - 1);
+          context.fillStyle = "#000";
+          context.font = `${labelFont}px "Courier New", monospace`;
+          context.fillText(compactBoxLabel(index + 1), x + cellWidth / 2, y + cellHeight / 2 + .5);
 
           if (index < stats.fullBoxes) {
-            context.lineWidth = 1.8;
+            context.lineWidth = 1.2;
             context.lineCap = "round";
             context.lineJoin = "round";
             context.beginPath();
-            context.moveTo(x + cellSize * .2, y + cellSize * .55);
-            context.lineTo(x + cellSize * .42, y + cellSize * .78);
-            context.lineTo(x + cellSize * .8, y + cellSize * .26);
+            context.moveTo(x + cellWidth - 8, y + 4);
+            context.lineTo(x + cellWidth - 5, y + 7);
+            context.lineTo(x + cellWidth - 1.5, y + 2);
             context.stroke();
           } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
             context.save();
             context.beginPath();
-            context.rect(x, y, cellSize, cellSize);
+            context.rect(x, y, cellWidth, cellHeight);
             context.clip();
             context.fillStyle = "rgba(0, 0, 0, 0.16)";
             context.beginPath();
-            context.moveTo(x, y + cellSize);
-            context.lineTo(x, y + cellSize * (1 - stats.partialRatio));
-            context.lineTo(x + cellSize * stats.partialRatio, y + cellSize);
+            context.moveTo(x, y + cellHeight);
+            context.lineTo(x, y + cellHeight * (1 - stats.partialRatio));
+            context.lineTo(x + cellWidth * stats.partialRatio, y + cellHeight);
             context.closePath();
             context.fill();
             context.strokeStyle = "#000";
             context.beginPath();
-            context.moveTo(x + cellSize * .12, y + cellSize * .82);
-            context.lineTo(x + cellSize * .82, y + cellSize * .12);
-            context.lineWidth = 1.4;
+            context.moveTo(x + 2, y + cellHeight - 2);
+            context.lineTo(x + cellWidth - 2, y + 2);
+            context.lineWidth = 1;
             context.stroke();
             context.restore();
           }
@@ -1054,13 +1164,16 @@
           text(`${line}\n`);
           command(ESC, 0x61, 0x01);
           command(ESC, 0x45, 0x01);
-          text("DIGITAL CARD MARKS\n");
+          text("DIGITAL PRODUCT CARD\n");
           command(ESC, 0x45, 0x00);
-          text(`1 box = GHS ${money(receipt.marking.boxValue)}\n`);
-          text(`${receipt.marking.boxesPerRow} boxes = GHS ${money(receipt.marking.cardValue)}\n`);
+          text(`Product total: GHS ${money(receipt.marking.productTotal)}\n`);
+          text(`Box value: GHS ${money(receipt.marking.boxValue)}\n`);
+          text(`Marked: ${markedRatioLabel(receipt.marking)}\n`);
+          text(`Unmarked: ${receipt.marking.unmarkedBoxes}\n`);
+          text("B = Box\n");
           const markCanvas = createMarkGridCanvas(receipt.marking);
           parts.push(canvasToEscPosRaster(markCanvas));
-          text(`\n${markingSummary(receipt.marking)}\n`);
+          text(`${markingSummary(receipt.marking)}\n`);
           command(ESC, 0x61, 0x00);
         }
 
@@ -1084,7 +1197,7 @@
         command(ESC, 0x45, 0x00);
         text("Head Office: Kaneshie\n");
         text("Computer-generated receipt\n");
-        command(ESC, 0x64, 0x05);           // Feed 5 lines; printer is manual-tear
+        command(ESC, 0x64, 0x02);           // Feed 2 lines; printer is manual-tear
 
         return concatBytes(parts);
       }
@@ -1235,9 +1348,9 @@
         const amount = numberValue("amount");
         const previouslyPaid = numberValue("previouslyPaid");
         const total = numberValue("productTotal");
-        const cardValue = numberValue("cardValue");
         const boxValue = numberValue("boxValue");
         const now = new Date();
+        const runningTotalPaid = state.susuMode ? amount : previouslyPaid + amount;
         const receipt = {
           receiptNumber: makeId("SLR"),
           paymentId: makeId("PAY"),
@@ -1247,9 +1360,10 @@
           accountNumber: el("customerAccount").value.trim(),
           productName: state.susuMode ? "SUSU Savings Account" : el("productName").value.trim(),
           paymentType: state.susuMode ? "SUSU Deposit" : "Product Payment",
+          productTotal: state.susuMode ? 0 : total,
           amount,
           previouslyPaid: state.susuMode ? 0 : previouslyPaid,
-          totalPaid: state.susuMode ? amount : previouslyPaid + amount,
+          totalPaid: runningTotalPaid,
           amountLeft: state.susuMode ? 0 : Math.max(total - previouslyPaid - amount, 0),
           method: el("paymentMethod").value,
           paymentDate: el("paymentDate").value,
@@ -1261,7 +1375,7 @@
           agentId: el("agentId").value.trim(),
           susuMode: state.susuMode,
           smsEnabled: state.smsEnabled,
-          marking: state.susuMode ? null : getMarkingStats(amount, cardValue, boxValue),
+          marking: state.susuMode ? null : getMarkingStats(total, runningTotalPaid, boxValue),
           printCount: 0
         };
         receipt.qrPayload = createQrPayload(receipt);
@@ -1333,6 +1447,15 @@
               icon: "warning",
               title: "Invalid card marking values",
               text: "The card row value must divide evenly by the box value. Example: GHS 10 ÷ GHS 2 = 5 boxes."
+            });
+            return false;
+          }
+          const totalBoxes = total / boxValue;
+          if (Math.abs(totalBoxes - Math.round(totalBoxes)) > .0001) {
+            Swal.fire({
+              icon: "warning",
+              title: "Invalid product box values",
+              text: "The product total must divide evenly by the box value so every box can be numbered. Example: GHS 1000 ÷ GHS 2 = 500 boxes."
             });
             return false;
           }
