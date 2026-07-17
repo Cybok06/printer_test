@@ -78,76 +78,41 @@
     .receipt-stage { background: #edf1f5; border-radius: 14px; padding: 18px 12px; display: flex; justify-content: center; }
 
     /* Screen preview of a 58 mm thermal receipt. */
-    .thermal-receipt { width: 58mm; min-height: 120mm; background: #fff; color: #000; padding: 4mm 3.2mm 6mm; font-family: "Courier New", ui-monospace, monospace; font-size: 9.5px; line-height: 1.28; box-shadow: 0 7px 20px rgba(15, 23, 42, .16); overflow-wrap: anywhere; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .thermal-receipt { width: 58mm; min-height: 0; background: #fff; color: #000; padding: 2.2mm 2.2mm 3mm; font-family: "Courier New", ui-monospace, monospace; font-size: 8.8px; line-height: 1.16; box-shadow: 0 7px 20px rgba(15, 23, 42, .16); overflow-wrap: anywhere; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .receipt-company { text-align: center; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.05; font-weight: 900; letter-spacing: -.2px; }
     .receipt-tagline, .receipt-branch { text-align: center; font-size: 8.5px; margin-top: 3px; }
-    .receipt-rule { border: 0; border-top: 1px dashed #000; margin: 7px 0; opacity: 1; }
-    .receipt-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin: 3px 0; }
+    .receipt-rule { border: 0; border-top: 1px dashed #000; margin: 3px 0; opacity: 1; }
+    .receipt-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; margin: 1px 0; }
     .receipt-row .key { flex: 0 0 auto; }
     .receipt-row .val { font-weight: 700; text-align: right; min-width: 0; }
-    .receipt-block { margin: 4px 0; }
+    .receipt-block { margin: 2px 0; }
     .receipt-block .key { display: block; font-size: 8px; }
     .receipt-block .val { display: block; font-weight: 700; margin-top: 1px; }
-    .receipt-amount { margin: 8px 0; padding: 7px 3px; border: 1.5px solid #000; text-align: center; }
+    .receipt-amount { margin: 4px 0; padding: 4px 2px; border: 1.2px solid #000; text-align: center; }
     .receipt-amount .caption { font-size: 8px; font-weight: 700; }
     .receipt-amount .money { font-family: Arial, sans-serif; font-size: 21px; font-weight: 900; margin-top: 2px; }
-    .receipt-marks { border: 1px solid #000; padding: 4px 3px 3px; margin: 4px 0 5px; }
+    .receipt-marks { border: 1px solid #000; padding: 2px; margin: 2px 0 3px; }
     .receipt-marks-title { text-align: center; font-size: 8.2px; font-weight: 900; letter-spacing: .03em; }
     .receipt-marks-meta { text-align: center; font-size: 6.5px; line-height: 1.15; margin-top: 1px; }
     .receipt-marks-meta div + div { margin-top: 1px; }
     .mark-grid {
-      --boxes-per-row: 10;
+      --groups-per-row: 15;
       display: grid;
-      grid-template-columns: repeat(var(--boxes-per-row), minmax(0, 1fr));
+      grid-template-columns: repeat(var(--groups-per-row), minmax(0, 1fr));
       gap: 1px;
-      margin: 3px auto 0;
+      margin: 2px auto 0;
       width: 100%;
     }
-    .mark-box {
-      min-width: 0;
-      height: 12px;
-      border: 1px solid #000;
-      background: #fff;
-      color: #000;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 1px;
-      font-family: "Courier New", ui-monospace, monospace;
-      font-size: var(--mark-font-size, 5.3px);
-      font-weight: 700;
-      line-height: 1;
-    }
-    .mark-box-label {
-      position: relative;
-      z-index: 1;
-      white-space: nowrap;
-      letter-spacing: -.02em;
-    }
-    .mark-box.marked::after {
-      content: "\2713";
-      position: absolute;
-      top: -1px;
-      right: 1px;
-      font-size: 6.4px;
-      font-weight: 900;
-      line-height: 1;
-      background: #fff;
-      padding-left: 1px;
-    }
-    .mark-box.partial::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, transparent 0 60%, #000 60% 66%, transparent 66% 100%),
-        linear-gradient(135deg, rgba(0, 0, 0, .16) 0 var(--partial-fill), transparent var(--partial-fill) 100%);
-    }
-    .receipt-marks-summary { text-align: center; font-size: 6.6px; font-weight: 800; margin-top: 3px; }
-    .receipt-qr { display: flex; justify-content: center; margin: 7px auto 4px; }
-    .receipt-qr canvas, .receipt-qr img { width: 28mm !important; height: 28mm !important; image-rendering: pixelated; }
+    .mark-group { min-width: 0; position: relative; padding-top: 5px; }
+    .mark-group-label { position: absolute; top: 0; left: 0; width: 100%; height: 5px; overflow: hidden; text-align: center; font: 700 3.8px/5px "Courier New", monospace; white-space: nowrap; }
+    .mark-micro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; }
+    .mark-micro-box { position: relative; height: 5px; border: .7px solid #000; background: #fff; }
+    .mark-micro-box.marked::after { content: "✓"; position: absolute; inset: -2px 0 0; display: grid; place-items: center; color: #000; font: 900 5px/1 Arial, sans-serif; }
+    .mark-micro-box.partial::after { content: ""; position: absolute; left: 1px; bottom: 1px; width: calc(100% - 2px); border-top: 1px solid #000; transform: rotate(-35deg); transform-origin: center; }
+    .mark-micro-box.invalid { visibility: hidden; }
+    .receipt-marks-summary { display: none; }
+    .receipt-qr { display: flex; justify-content: center; margin: 3px auto 1px; }
+    .receipt-qr canvas, .receipt-qr img { width: 19mm !important; height: 19mm !important; image-rendering: pixelated; }
     .receipt-center { text-align: center; }
     .receipt-small { font-size: 7.8px; }
     .receipt-copy-badge { text-align: center; border: 1px solid #000; padding: 2px 5px; margin: 0 auto 5px; width: fit-content; font-weight: 800; display: none; }
@@ -234,7 +199,7 @@
         top: 0 !important;
         width: 58mm !important;
         min-height: 0 !important;
-        padding: 3mm 3mm 6mm !important;
+        padding: 2mm 2mm 3mm !important;
         margin: 0 !important;
         box-shadow: none !important;
       }
@@ -489,11 +454,9 @@
                 <section id="receiptMarksSection" class="receipt-marks">
                   <div class="receipt-marks-title">DIGITAL PRODUCT CARD</div>
                   <div id="rMarkMeta" class="receipt-marks-meta">
-                    <div>Product total: GHS 0.00</div>
-                    <div>Box value: GHS 0.00</div>
-                    <div>Marked: 0 / 0</div>
-                    <div>Unmarked: 0</div>
-                    <div>B = Box</div>
+                    <div>Total: GHS 0.00 · Box: GHS 0.00</div>
+                    <div>Marked: 0 / 0 · Empty: 0</div>
+                    <div>Each group = 4 boxes · label = first box</div>
                   </div>
                   <div id="rMarkGrid" class="mark-grid" aria-label="Digitally marked payment boxes"></div>
                   <div id="rMarkedBoxSummary" class="receipt-marks-summary">0 boxes marked · 0 boxes unmarked</div>
@@ -508,7 +471,6 @@
 
                 <div id="receiptQr" class="receipt-qr" aria-label="Receipt QR code"></div>
                 <div class="receipt-center receipt-small fw-bold">SCAN FOR PAYMENT DETAILS</div>
-                <div class="receipt-center receipt-small mt-1">Keep this receipt for reference.</div>
                 <hr class="receipt-rule">
                 <div class="receipt-center receipt-small">Thank you for choosing Smart Living.</div>
                 <div class="receipt-center receipt-small fw-bold mt-1">053-003-9625</div>
@@ -879,13 +841,17 @@
         const remainderValue = Math.max(0, clampedTotalPaid - fullBoxes * safeBoxValue);
         const hasPartial = remainderValue > .005 && fullBoxes < totalBoxes;
         const partialRatio = hasPartial ? Math.min(1, remainderValue / safeBoxValue) : 0;
-        const boxesPerRow = 10;
-        const rows = Math.max(1, Math.ceil(totalBoxes / boxesPerRow));
+        const boxesPerGroup = 4;
+        const groupsPerRow = 15;
+        const totalGroups = Math.ceil(totalBoxes / boxesPerGroup);
+        const rows = Math.max(1, Math.ceil(totalGroups / groupsPerRow));
         return {
           productTotal: safeProductTotal,
           totalPaid: clampedTotalPaid,
           boxValue: safeBoxValue,
-          boxesPerRow,
+          boxesPerGroup,
+          groupsPerRow,
+          totalGroups,
           totalBoxes,
           fullBoxes,
           remainderValue,
@@ -910,11 +876,9 @@
       function updateMarkMeta(stats) {
         const holder = el("rMarkMeta");
         const lines = [
-          `Product total: GHS ${money(stats.productTotal)}`,
-          `Box value: GHS ${money(stats.boxValue)}`,
-          `Marked: ${markedRatioLabel(stats)}`,
-          `Unmarked: ${stats.unmarkedBoxes}`,
-          "B = Box"
+          `Total: GHS ${money(stats.productTotal)} · Box: GHS ${money(stats.boxValue)}`,
+          `Marked: ${markedRatioLabel(stats)} · Empty: ${stats.unmarkedBoxes}`,
+          "Each group = 4 boxes · label = first box"
         ];
         holder.replaceChildren(...lines.map((line) => {
           const row = document.createElement("div");
@@ -954,25 +918,37 @@
         const grid = el("rMarkGrid");
         grid.replaceChildren();
         updateMarkMeta(stats);
-        grid.style.setProperty("--boxes-per-row", String(stats.boxesPerRow));
-        grid.style.setProperty("--mark-font-size", getMarkFontSize(stats.totalBoxes));
+        grid.style.setProperty("--groups-per-row", String(stats.groupsPerRow));
         const fragment = document.createDocumentFragment();
-        for (let index = 0; index < stats.totalSlots; index += 1) {
-          const box = document.createElement("span");
-          box.className = "mark-box";
-          box.title = `Box ${index + 1}`;
-          box.setAttribute("aria-label", `Box ${index + 1}`);
+        for (let groupIndex = 0; groupIndex < stats.totalGroups; groupIndex += 1) {
+          const group = document.createElement("span");
+          group.className = "mark-group";
+          const firstBoxNumber = groupIndex * stats.boxesPerGroup + 1;
           const label = document.createElement("span");
-          label.className = "mark-box-label";
-          label.textContent = compactBoxLabel(index + 1);
-          box.appendChild(label);
-          if (index < stats.fullBoxes) {
-            box.classList.add("marked");
-          } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
-            box.classList.add("partial");
-            box.style.setProperty("--partial-fill", `${Math.round(stats.partialRatio * 100)}%`);
+          label.className = "mark-group-label";
+          label.textContent = String(firstBoxNumber);
+          label.title = `Boxes ${firstBoxNumber}–${Math.min(firstBoxNumber + 3, stats.totalBoxes)}`;
+          group.appendChild(label);
+          const microGrid = document.createElement("span");
+          microGrid.className = "mark-micro-grid";
+          for (let offset = 0; offset < stats.boxesPerGroup; offset += 1) {
+            const actualIndex = groupIndex * stats.boxesPerGroup + offset;
+            const boxNumber = actualIndex + 1;
+            const box = document.createElement("span");
+            box.className = "mark-micro-box";
+            if (actualIndex >= stats.totalBoxes) {
+              box.classList.add("invalid");
+              box.setAttribute("aria-hidden", "true");
+            } else {
+              box.title = `Box ${boxNumber}`;
+              box.setAttribute("aria-label", `Box ${boxNumber}`);
+              if (actualIndex < stats.fullBoxes) box.classList.add("marked");
+              else if (actualIndex === stats.fullBoxes && stats.partialRatio > 0) box.classList.add("partial");
+            }
+            microGrid.appendChild(box);
           }
-          fragment.appendChild(box);
+          group.appendChild(microGrid);
+          fragment.appendChild(group);
         }
         grid.appendChild(fragment);
         setText("rMarkedBoxSummary", markingSummary(stats));
@@ -981,15 +957,17 @@
 
       function createMarkGridCanvas(stats) {
         const width = 360;
-        const sidePadding = 0;
+        const sidePadding = 1;
         const gap = 1;
-        const cellWidth = Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow);
-        const cellHeight = 11;
-        const gridWidth = cellWidth * stats.boxesPerRow + gap * (stats.boxesPerRow - 1);
-        const gridHeight = cellHeight * stats.rows + gap * (stats.rows - 1);
+        const groupWidth = Math.floor((width - sidePadding * 2 - gap * (stats.groupsPerRow - 1)) / stats.groupsPerRow);
+        const labelHeight = 5;
+        const microHeight = 5;
+        const groupHeight = labelHeight + microHeight * 2;
+        const gridWidth = groupWidth * stats.groupsPerRow + gap * (stats.groupsPerRow - 1);
+        const gridHeight = groupHeight * stats.rows + gap * (stats.rows - 1);
         const canvas = document.createElement("canvas");
         canvas.width = width;
-        canvas.height = gridHeight + 2;
+        canvas.height = gridHeight + 1;
         const context = canvas.getContext("2d");
         context.fillStyle = "#ffffff";
         context.fillRect(0, 0, canvas.width, canvas.height);
@@ -998,67 +976,101 @@
         context.textBaseline = "middle";
 
         const startX = Math.floor((width - gridWidth) / 2);
-        const startY = 1;
-        const labelFont = String(Math.max(1, stats.totalBoxes)).length >= 4 ? 5 : String(Math.max(1, stats.totalBoxes)).length === 3 ? 6 : 7;
-        for (let index = 0; index < stats.totalSlots; index += 1) {
-          const row = Math.floor(index / stats.boxesPerRow);
-          const column = index % stats.boxesPerRow;
-          const x = startX + column * (cellWidth + gap);
-          const y = startY + row * (cellHeight + gap);
-          context.lineWidth = 1;
-          context.strokeRect(x + .5, y + .5, cellWidth - 1, cellHeight - 1);
+        const startY = 0;
+        const labelFont = String(stats.totalBoxes).length >= 4 ? 4 : 5;
+        for (let groupIndex = 0; groupIndex < stats.totalGroups; groupIndex += 1) {
+          const row = Math.floor(groupIndex / stats.groupsPerRow);
+          const column = groupIndex % stats.groupsPerRow;
+          const groupX = startX + column * (groupWidth + gap);
+          const groupY = startY + row * (groupHeight + gap);
+          const firstBoxNumber = groupIndex * stats.boxesPerGroup + 1;
           context.fillStyle = "#000";
-          context.font = `${labelFont}px "Courier New", monospace`;
-          context.fillText(compactBoxLabel(index + 1), x + cellWidth / 2, y + cellHeight / 2 + .5);
+          context.font = `bold ${labelFont}px "Courier New", monospace`;
+          context.fillText(String(firstBoxNumber), groupX + groupWidth / 2, groupY + labelHeight / 2);
 
-          if (index < stats.fullBoxes) {
-            context.lineWidth = 1.2;
-            context.lineCap = "round";
-            context.lineJoin = "round";
-            context.beginPath();
-            context.moveTo(x + cellWidth - 8, y + 4);
-            context.lineTo(x + cellWidth - 5, y + 7);
-            context.lineTo(x + cellWidth - 1.5, y + 2);
-            context.stroke();
-          } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
-            context.save();
-            context.beginPath();
-            context.rect(x, y, cellWidth, cellHeight);
-            context.clip();
-            context.fillStyle = "rgba(0, 0, 0, 0.16)";
-            context.beginPath();
-            context.moveTo(x, y + cellHeight);
-            context.lineTo(x, y + cellHeight * (1 - stats.partialRatio));
-            context.lineTo(x + cellWidth * stats.partialRatio, y + cellHeight);
-            context.closePath();
-            context.fill();
+          const microWidth = Math.floor(groupWidth / 2);
+          for (let offset = 0; offset < stats.boxesPerGroup; offset += 1) {
+            const actualIndex = groupIndex * stats.boxesPerGroup + offset;
+            if (actualIndex >= stats.totalBoxes) continue;
+            const microColumn = offset % 2;
+            const microRow = Math.floor(offset / 2);
+            const x = groupX + microColumn * microWidth;
+            const y = groupY + labelHeight + microRow * microHeight;
+            const widthForCell = microColumn === 1 ? groupWidth - microWidth : microWidth;
             context.strokeStyle = "#000";
-            context.beginPath();
-            context.moveTo(x + 2, y + cellHeight - 2);
-            context.lineTo(x + cellWidth - 2, y + 2);
             context.lineWidth = 1;
-            context.stroke();
-            context.restore();
+            context.strokeRect(x + .5, y + .5, Math.max(1, widthForCell - 1), Math.max(1, microHeight - 1));
+
+            if (actualIndex < stats.fullBoxes) {
+              const tickLeft = x + Math.max(1, widthForCell * .18);
+              const tickMid = x + Math.max(2, widthForCell * .42);
+              const tickRight = x + Math.max(3, widthForCell * .82);
+              context.lineWidth = 1;
+              context.lineCap = "round";
+              context.lineJoin = "round";
+              context.beginPath();
+              context.moveTo(tickLeft, y + microHeight * .55);
+              context.lineTo(tickMid, y + microHeight * .78);
+              context.lineTo(tickRight, y + microHeight * .22);
+              context.stroke();
+            } else if (actualIndex === stats.fullBoxes && stats.partialRatio > 0) {
+              context.beginPath();
+              context.moveTo(x + 1, y + microHeight - 1);
+              context.lineTo(x + widthForCell - 1, y + 1);
+              context.lineWidth = 1;
+              context.stroke();
+            }
           }
         }
         return canvas;
       }
 
-      async function createQrCanvas(payload, innerSize = 144, quietZone = 12) {
-        if (!window.QRCode) throw new Error("QR generator did not load. Check the internet connection and reload.");
-        const holder = el("qrWorkspace");
+      function safeQrText(value, maxLength = 180) {
+        return sanitizePrinterText(value).replace(/\s+/g, " ").trim().slice(0, maxLength);
+      }
+
+      function tryRenderQr(holder, payload, size) {
+        if (!window.QRCode || !holder) return false;
         holder.replaceChildren();
-        new QRCode(holder, {
-          text: payload,
-          width: innerSize,
-          height: innerSize,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        await delay(45);
-        const source = holder.querySelector("canvas");
-        if (!source) throw new Error("QR canvas could not be generated.");
+        try {
+          new QRCode(holder, {
+            text: safeQrText(payload),
+            width: size,
+            height: size,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L
+          });
+          return Boolean(holder.querySelector("canvas") || holder.querySelector("img"));
+        } catch (error) {
+          console.warn("QR generation skipped:", error?.message || error);
+          holder.replaceChildren();
+          return false;
+        }
+      }
+
+      function safeRenderQr(holder, primaryPayload, fallbackPayload, size = 96) {
+        if (tryRenderQr(holder, primaryPayload, size)) return true;
+        if (tryRenderQr(holder, fallbackPayload, size)) return true;
+        holder.replaceChildren();
+        const fallback = document.createElement("div");
+        fallback.className = "receipt-center receipt-small";
+        fallback.textContent = `QR unavailable · ${safeQrText(fallbackPayload, 70)}`;
+        holder.appendChild(fallback);
+        return false;
+      }
+
+      async function createQrCanvas(primaryPayload, fallbackPayload, innerSize = 104, quietZone = 8) {
+        if (!window.QRCode) return null;
+        const holder = el("qrWorkspace");
+        let source = null;
+        for (const candidate of [primaryPayload, fallbackPayload]) {
+          if (!candidate || !tryRenderQr(holder, candidate, innerSize)) continue;
+          await delay(25);
+          source = holder.querySelector("canvas");
+          if (source) break;
+        }
+        if (!source) return null;
 
         const output = document.createElement("canvas");
         output.width = innerSize + quietZone * 2;
@@ -1169,14 +1181,11 @@
           command(ESC, 0x45, 0x01);
           text("DIGITAL PRODUCT CARD\n");
           command(ESC, 0x45, 0x00);
-          text(`Product total: GHS ${money(receipt.marking.productTotal)}\n`);
-          text(`Box value: GHS ${money(receipt.marking.boxValue)}\n`);
-          text(`Marked: ${markedRatioLabel(receipt.marking)}\n`);
-          text(`Unmarked: ${receipt.marking.unmarkedBoxes}\n`);
-          text("B = Box\n");
+          text(`Total GHS ${money(receipt.marking.productTotal)} | Box GHS ${money(receipt.marking.boxValue)}\n`);
+          text(`Marked ${markedRatioLabel(receipt.marking)} | Empty ${receipt.marking.unmarkedBoxes}\n`);
+          text("4 boxes/group; label=first\n");
           const markCanvas = createMarkGridCanvas(receipt.marking);
           parts.push(canvasToEscPosRaster(markCanvas));
-          text(`${markingSummary(receipt.marking)}\n`);
           command(ESC, 0x61, 0x00);
         }
 
@@ -1188,11 +1197,14 @@
         text(`${pairLine("Agent:", `${receipt.agentName} (${receipt.agentId || "N/A"})`)}\n`);
         text(`${line}\n`);
 
-        const qrCanvas = await createQrCanvas(receipt.qrPayload, 144, 12);
+        const qrCanvas = await createQrCanvas(receipt.qrPayload, receipt.qrFallback, 104, 8);
         command(ESC, 0x61, 0x01);
-        parts.push(canvasToEscPosRaster(qrCanvas));
-        text("\nSCAN FOR PAYMENT DETAILS\n");
-        text("Keep this receipt for reference.\n");
+        if (qrCanvas) {
+          parts.push(canvasToEscPosRaster(qrCanvas));
+          text("\nSCAN FOR PAYMENT DETAILS\n");
+        } else {
+          text(`QR unavailable\n${receipt.receiptNumber}\n${receipt.paymentId}\n`);
+        }
         text(`${line}\n`);
         text("Thank you for choosing\nSmart Living.\n");
         command(ESC, 0x45, 0x01);
@@ -1331,20 +1343,12 @@
       }
 
       function createQrPayload(receipt) {
-        const lines = [
-          "SMART LIVING RECEIPT",
-          `Receipt ${receipt.receiptNumber}`,
-          `Customer ${receipt.customerName} [${receipt.customerId}]`,
-          `Product ${receipt.productName}`,
-          `Paid GHS ${money(receipt.amount)} on ${receipt.dateLabel} ${receipt.time}`,
-          `Agent ${receipt.agentName} [${receipt.agentId || "N/A"}]`,
-          `Branch ${receipt.branch}`
-        ];
-        if (!receipt.susuMode && receipt.marking) {
-          lines.splice(5, 0, `Marks ${markingSummary(receipt.marking)}; GHS ${money(receipt.marking.boxValue)}/box`);
-        }
-        lines.push("Company 053-003-9625");
-        return lines.join("\n");
+        const compactDate = String(receipt.paymentDate || "").replace(/-/g, "");
+        return safeQrText(`SL|R=${receipt.receiptNumber}|P=${receipt.paymentId}|C=${receipt.customerId}|A=${Number(receipt.amount).toFixed(2)}|D=${compactDate}`, 180);
+      }
+
+      function createQrFallback(receipt) {
+        return safeQrText(`SL|R=${receipt.receiptNumber}|P=${receipt.paymentId}`, 90);
       }
 
       function collectReceiptData() {
@@ -1382,6 +1386,7 @@
           printCount: 0
         };
         receipt.qrPayload = createQrPayload(receipt);
+        receipt.qrFallback = createQrFallback(receipt);
         return receipt;
       }
 
@@ -1417,20 +1422,9 @@
         setPrintStatus("Ready. Printing failure will not remove the payment.", "info");
 
         const qrHolder = el("receiptQr");
-        qrHolder.replaceChildren();
-        if (window.QRCode) {
-          await nextFrame();
-          new QRCode(qrHolder, {
-            text: receipt.qrPayload,
-            width: 132,
-            height: 132,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M
-          });
-        } else {
-          qrHolder.textContent = "QR generator unavailable";
-        }
+        await nextFrame();
+        const qrCreated = safeRenderQr(qrHolder, receipt.qrPayload, receipt.qrFallback, 96);
+        if (!qrCreated) setPrintStatus("The QR could not be created, but the receipt is still available.", "info");
       }
 
       function validatePayment() {
@@ -1501,7 +1495,8 @@
           susuMode: true,
           printCount: 0
         };
-        receipt.qrPayload = "SMART LIVING MP583 TEST\nBluetooth ESC/POS connection successful.";
+        receipt.qrPayload = "SL|R=MP583-TEST|P=TEST-CONNECTION";
+        receipt.qrFallback = "SL|R=MP583-TEST";
         return receipt;
       }
 
