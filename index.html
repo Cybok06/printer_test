@@ -91,11 +91,11 @@
     .receipt-amount { margin: 8px 0; padding: 7px 3px; border: 1.5px solid #000; text-align: center; }
     .receipt-amount .caption { font-size: 8px; font-weight: 700; }
     .receipt-amount .money { font-family: Arial, sans-serif; font-size: 21px; font-weight: 900; margin-top: 2px; }
-    .receipt-marks { border: 1.5px solid #000; padding: 7px 6px; margin: 8px 0; }
+    .receipt-marks { border: 1.5px solid #000; padding: 5px 4px 4px; margin: 5px 0 6px; }
     .receipt-marks-title { text-align: center; font-size: 9px; font-weight: 900; letter-spacing: .04em; }
-    .receipt-marks-rule { text-align: center; font-size: 7.7px; margin-top: 2px; }
-    .mark-grid { --boxes-per-row: 5; display: grid; grid-template-columns: repeat(var(--boxes-per-row), minmax(0, 1fr)); gap: 3px; margin-top: 7px; }
-    .mark-box { aspect-ratio: 1; border: 1.4px solid #000; display: grid; place-items: center; font-family: Arial, sans-serif; font-size: 12px; font-weight: 900; line-height: 1; background: #fff; }
+    .receipt-marks-rule { text-align: center; font-size: 7px; margin-top: 1px; }
+    .mark-grid { --boxes-per-row: 5; display: grid; grid-template-columns: repeat(var(--boxes-per-row), max-content); justify-content: center; gap: 2px; margin: 4px auto 0; width: fit-content; max-width: 100%; }
+    .mark-box { width: 8px; height: 8px; border: 1px solid #000; display: grid; place-items: center; font-family: Arial, sans-serif; font-size: 8px; font-weight: 900; line-height: 1; background: #fff; color: #000; position: relative; }
     .mark-box.marked::after { content: "✓"; }
     .mark-box.partial { background: linear-gradient(135deg, #000 0 var(--partial-fill), #fff var(--partial-fill) 100%); }
     .mark-box.partial::after { content: "P"; color: #fff; font-size: 7px; text-shadow: 0 0 1px #000; }
@@ -106,6 +106,46 @@
     .receipt-small { font-size: 7.8px; }
     .receipt-copy-badge { text-align: center; border: 1px solid #000; padding: 2px 5px; margin: 0 auto 5px; width: fit-content; font-weight: 800; display: none; }
     .receipt-copy-badge.show { display: block; }
+    .mark-box.marked::after { content: "\2713"; transform: translateY(-.2px); }
+    .mark-box.partial { background: #fff; }
+    .mark-box.partial::after { content: none; }
+    .mark-box.partial::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, transparent 0 56%, #000 56% 66%, transparent 66% 100%),
+        linear-gradient(135deg, rgba(0, 0, 0, .18) 0 var(--partial-fill), transparent var(--partial-fill) 100%);
+    }
+    .print-anim-panel { margin-top: 12px; border: 1px solid #dbe5f4; border-radius: 14px; background: linear-gradient(180deg, #ffffff, #f5f8fc); padding: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .7); display: none; }
+    .print-anim-panel.show { display: block; }
+    .print-anim-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .print-anim-title { font-size: .95rem; font-weight: 800; }
+    .print-anim-state { font-size: .78rem; color: var(--sl-muted); }
+    .print-anim-figure-wrap { display: flex; justify-content: center; padding: 4px 0 10px; }
+    .print-anim-figure { width: min(100%, 220px); position: relative; padding-top: 6px; }
+    .mini-printer { position: relative; height: 88px; border-radius: 18px; background: linear-gradient(180deg, #2d3748, #111827); box-shadow: 0 18px 26px rgba(15, 23, 42, .16); overflow: hidden; }
+    .mini-printer::before { content: ""; position: absolute; inset: 12px 16px auto; height: 14px; border-radius: 999px; background: linear-gradient(90deg, rgba(255,255,255,.15), rgba(255,255,255,.04)); }
+    .mini-printer-slot { position: absolute; left: 18px; right: 18px; bottom: 18px; height: 10px; border-radius: 999px; background: #05070b; box-shadow: inset 0 2px 4px rgba(255,255,255,.08); z-index: 3; }
+    .mini-printer-light { position: absolute; right: 18px; top: 18px; width: 10px; height: 10px; border-radius: 999px; background: #93c5fd; box-shadow: 0 0 0 5px rgba(147, 197, 253, .12); }
+    .mini-receipt { --print-progress: 0; position: absolute; left: 50%; top: 55px; width: 120px; height: 96px; transform: translate(-50%, calc(var(--print-progress) * 54px)); transform-origin: top center; background: #fff; border: 1px solid #d1d5db; border-radius: 0 0 10px 10px; box-shadow: 0 14px 20px rgba(15, 23, 42, .12); z-index: 1; overflow: hidden; transition: transform .18s linear; }
+    .mini-receipt-body { padding: 8px 10px 10px; }
+    .mini-line { height: 4px; border-radius: 999px; background: #d1d5db; margin-bottom: 5px; }
+    .mini-line.short { width: 58%; }
+    .mini-line.mid { width: 74%; }
+    .mini-qr { width: 18px; height: 18px; margin: 8px auto 7px; background: linear-gradient(90deg, #111 50%, transparent 50%) 0 0 / 6px 6px, linear-gradient(#111 50%, transparent 50%) 0 0 / 6px 6px; outline: 1px solid #111; }
+    .mini-mark-row { display: flex; justify-content: center; gap: 2px; }
+    .mini-mark-box { width: 7px; height: 7px; border: 1px solid #111; background: #fff; }
+    .mini-mark-box.marked { position: relative; }
+    .mini-mark-box.marked::after { content: ""; position: absolute; left: 1px; top: 2px; width: 4px; height: 2px; border-left: 1px solid #111; border-bottom: 1px solid #111; transform: rotate(-45deg); }
+    .print-progress { margin-top: 8px; }
+    .print-progress-bar { height: 7px; border-radius: 999px; background: #dbe4f0; overflow: hidden; }
+    .print-progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #2563eb, #0ea5e9); transition: width .12s linear; }
+    .print-progress-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .76rem; color: #475569; margin-top: 6px; }
+    .print-anim-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .print-anim-panel.success .print-progress-fill { background: linear-gradient(90deg, #16a34a, #22c55e); }
+    .print-anim-panel.error .print-progress-fill { background: linear-gradient(90deg, #dc2626, #ef4444); }
+    .print-anim-panel.error .mini-printer-light { background: #fca5a5; box-shadow: 0 0 0 5px rgba(252, 165, 165, .18); }
 
     .success-icon { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: #dcfce7; color: #15803d; font-weight: 900; font-size: 1.65rem; }
     .receipt-controls h3 { margin: 0; font-size: 1.25rem; font-weight: 850; }
@@ -135,6 +175,15 @@
       .receipt-modal-grid { grid-template-columns: 1fr; }
       .receipt-stage { order: 2; }
       .receipt-controls { order: 1; }
+      .print-anim-panel { padding: 12px; }
+      .mini-receipt { width: 108px; }
+      .print-anim-head { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn-spinner,
+      .mini-receipt,
+      .print-progress-fill { animation: none !important; transition: none !important; }
     }
 
     @media print {
@@ -444,6 +493,48 @@
                   </div>
                 </div>
                 <div id="printStatus" class="print-status info" role="status" aria-live="polite">Ready. Printing failure will not remove the payment.</div>
+                <div id="printAnimPanel" class="print-anim-panel" aria-live="polite">
+                  <div class="print-anim-head">
+                    <div>
+                      <div class="print-anim-title">MP583 Printing</div>
+                      <div id="printAnimState" class="print-anim-state">Connecting to MP583...</div>
+                    </div>
+                    <span id="printAnimPercent">0%</span>
+                  </div>
+                  <div class="print-anim-figure-wrap">
+                    <div class="print-anim-figure">
+                      <div class="mini-printer">
+                        <div class="mini-printer-light"></div>
+                        <div class="mini-receipt" id="miniReceipt">
+                          <div class="mini-receipt-body">
+                            <div class="mini-line short"></div>
+                            <div class="mini-line"></div>
+                            <div class="mini-line mid"></div>
+                            <div class="mini-qr"></div>
+                            <div class="mini-mark-row">
+                              <span class="mini-mark-box marked"></span>
+                              <span class="mini-mark-box marked"></span>
+                              <span class="mini-mark-box marked"></span>
+                              <span class="mini-mark-box"></span>
+                              <span class="mini-mark-box"></span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mini-printer-slot"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="print-progress">
+                    <div class="print-progress-bar"><div id="printProgressFill" class="print-progress-fill"></div></div>
+                    <div class="print-progress-meta">
+                      <span id="printAnimDetail">Waiting to begin...</span>
+                      <span id="printAnimBytes">0 / 0 bytes</span>
+                    </div>
+                  </div>
+                  <div class="print-anim-actions">
+                    <button type="button" id="printAnimDoneBtn" class="btn btn-sm btn-outline-secondary d-none">Done</button>
+                  </div>
+                </div>
               </div>
 
               <div class="control-card">
@@ -499,7 +590,8 @@
         currentReceipt: null,
         lastReceipt: null,
         susuMode: false,
-        smsEnabled: false
+        smsEnabled: false,
+        printAnimTimer: null
       };
 
       const el = (id) => document.getElementById(id);
@@ -572,6 +664,37 @@
         const box = el("printStatus");
         box.textContent = message;
         box.className = `print-status ${type}`;
+      }
+
+      function clearPrintAnimTimer() {
+        if (state.printAnimTimer) {
+          window.clearTimeout(state.printAnimTimer);
+          state.printAnimTimer = null;
+        }
+      }
+
+      function showPrintAnimation({ stateText, detail, progress = 0, written = 0, total = 0, tone = "info", done = false, autoClose = false } = {}) {
+        const panel = el("printAnimPanel");
+        const normalizedProgress = Math.max(0, Math.min(1, Number(progress) || 0));
+        clearPrintAnimTimer();
+        panel.className = `print-anim-panel show${tone === "success" ? " success" : tone === "error" ? " error" : ""}`;
+        el("printAnimState").textContent = stateText || "Preparing receipt...";
+        el("printAnimDetail").textContent = detail || "Waiting to begin...";
+        el("printAnimPercent").textContent = `${Math.round(normalizedProgress * 100)}%`;
+        el("printAnimBytes").textContent = `${written} / ${total} bytes`;
+        el("printProgressFill").style.width = `${normalizedProgress * 100}%`;
+        el("miniReceipt").style.setProperty("--print-progress", String(normalizedProgress));
+        el("printAnimDoneBtn").classList.toggle("d-none", !done);
+        if (autoClose) {
+          state.printAnimTimer = window.setTimeout(() => hidePrintAnimation(), 2400);
+        }
+      }
+
+      function hidePrintAnimation() {
+        clearPrintAnimTimer();
+        const panel = el("printAnimPanel");
+        panel.className = "print-anim-panel";
+        el("printAnimDoneBtn").classList.add("d-none");
       }
 
       function serialSupported() {
@@ -751,50 +874,58 @@
       }
 
       function createMarkGridCanvas(stats) {
-        const width = 320;
-        const sidePadding = 14;
-        const gap = 6;
-        const cellSize = Math.max(20, Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow));
+        const width = 216;
+        const sidePadding = 4;
+        const gap = 2;
+        const cellSize = Math.max(12, Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow));
         const gridWidth = cellSize * stats.boxesPerRow + gap * (stats.boxesPerRow - 1);
         const gridHeight = cellSize * stats.rows + gap * (stats.rows - 1);
         const canvas = document.createElement("canvas");
         canvas.width = width;
-        canvas.height = gridHeight + 28;
+        canvas.height = gridHeight + 8;
         const context = canvas.getContext("2d");
         context.fillStyle = "#ffffff";
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.strokeStyle = "#000000";
-        context.lineWidth = 2;
-        context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
 
         const startX = Math.floor((width - gridWidth) / 2);
-        const startY = 14;
+        const startY = 4;
         for (let index = 0; index < stats.totalSlots; index += 1) {
           const row = Math.floor(index / stats.boxesPerRow);
           const column = index % stats.boxesPerRow;
           const x = startX + column * (cellSize + gap);
           const y = startY + row * (cellSize + gap);
-          context.lineWidth = 2;
+          context.lineWidth = 1.4;
           context.strokeRect(x, y, cellSize, cellSize);
 
           if (index < stats.fullBoxes) {
-            const inset = Math.max(6, Math.floor(cellSize * .2));
-            context.lineWidth = 3;
+            context.lineWidth = 1.8;
+            context.lineCap = "round";
+            context.lineJoin = "round";
             context.beginPath();
-            context.moveTo(x + inset, y + inset);
-            context.lineTo(x + cellSize - inset, y + cellSize - inset);
-            context.moveTo(x + cellSize - inset, y + inset);
-            context.lineTo(x + inset, y + cellSize - inset);
+            context.moveTo(x + cellSize * .2, y + cellSize * .55);
+            context.lineTo(x + cellSize * .42, y + cellSize * .78);
+            context.lineTo(x + cellSize * .8, y + cellSize * .26);
             context.stroke();
           } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
-            const fillHeight = Math.max(2, Math.round((cellSize - 4) * stats.partialRatio));
-            context.fillStyle = "#000000";
-            context.fillRect(x + 2, y + cellSize - 2 - fillHeight, cellSize - 4, fillHeight);
-            context.fillStyle = "#ffffff";
-            context.font = `bold ${Math.max(9, Math.floor(cellSize * .2))}px Arial`;
-            context.textAlign = "center";
-            context.textBaseline = "bottom";
-            context.fillText("PART", x + cellSize / 2, y + cellSize - 4);
+            context.save();
+            context.beginPath();
+            context.rect(x, y, cellSize, cellSize);
+            context.clip();
+            context.fillStyle = "rgba(0, 0, 0, 0.16)";
+            context.beginPath();
+            context.moveTo(x, y + cellSize);
+            context.lineTo(x, y + cellSize * (1 - stats.partialRatio));
+            context.lineTo(x + cellSize * stats.partialRatio, y + cellSize);
+            context.closePath();
+            context.fill();
+            context.strokeStyle = "#000";
+            context.beginPath();
+            context.moveTo(x + cellSize * .12, y + cellSize * .82);
+            context.lineTo(x + cellSize * .82, y + cellSize * .12);
+            context.lineWidth = 1.4;
+            context.stroke();
+            context.restore();
           }
         }
         return canvas;
@@ -958,13 +1089,17 @@
         return concatBytes(parts);
       }
 
-      async function writePrinterBytes(bytes) {
+      async function writePrinterBytes(bytes, onProgress) {
         if (!portIsOpen()) throw new Error("The printer is not connected.");
         const writer = state.port.writable.getWriter();
+        let written = 0;
         try {
           for (let offset = 0; offset < bytes.length; offset += WRITE_CHUNK_SIZE) {
-            await writer.write(bytes.slice(offset, offset + WRITE_CHUNK_SIZE));
-            if (offset + WRITE_CHUNK_SIZE < bytes.length) await delay(WRITE_CHUNK_DELAY_MS);
+            const chunk = bytes.slice(offset, offset + WRITE_CHUNK_SIZE);
+            await writer.write(chunk);
+            written += chunk.length;
+            if (onProgress) onProgress({ written, total: bytes.length, progress: written / bytes.length });
+            if (written < bytes.length) await delay(WRITE_CHUNK_DELAY_MS);
           }
         } finally {
           writer.releaseLock();
@@ -978,14 +1113,48 @@
         const originalLabel = button.textContent;
         button.disabled = true;
         button.textContent = isTest ? "Printing test…" : "Printing…";
-        setPrintStatus("Connecting and preparing ESC/POS receipt…", "info");
+        showPrintAnimation({
+          stateText: "Connecting to MP583...",
+          detail: "Waiting for Bluetooth permission and printer connection.",
+          progress: 0,
+          written: 0,
+          total: 0,
+          tone: "info"
+        });
+        setPrintStatus("Connecting and preparing ESC/POS receipt...", "info");
 
         try {
           // Request the port before QR work so Chrome receives the user gesture.
           await connectPrinter({ allowChooser: true });
-          setPrinterStatus("busy", "Printing…", "Sending receipt data in printer-safe chunks.");
+          showPrintAnimation({
+            stateText: "Preparing receipt...",
+            detail: "Generating QR code and ESC/POS payload.",
+            progress: .08,
+            written: 0,
+            total: 0,
+            tone: "info"
+          });
+          setPrinterStatus("busy", "Preparing receipt...", "Generating ESC/POS data for the MP583.");
           const bytes = await buildEscPosReceipt(receipt);
-          await writePrinterBytes(bytes);
+          showPrintAnimation({
+            stateText: "Printing receipt...",
+            detail: "Sending ESC/POS data in printer-safe chunks.",
+            progress: bytes.length ? .1 : 1,
+            written: 0,
+            total: bytes.length,
+            tone: "info"
+          });
+          setPrinterStatus("busy", "Printing...", "Sending receipt data in printer-safe chunks.");
+          await writePrinterBytes(bytes, ({ written, total, progress }) => {
+            showPrintAnimation({
+              stateText: "Printing receipt...",
+              detail: "Writing bytes to MP583 over Bluetooth.",
+              progress,
+              written,
+              total,
+              tone: "info"
+            });
+          });
           setPrinterStatus("ready", "MP583 connected", printerDescription(state.port));
 
           if (!isTest) {
@@ -993,17 +1162,46 @@
             el("receiptCopyBadge").classList.toggle("show", receipt.printCount > 1);
             el("bluetoothPrintBtn").textContent = "Reprint via MP583 Bluetooth";
             setPrintStatus(`Receipt sent successfully. Print count: ${receipt.printCount}.`, "success");
+            showPrintAnimation({
+              stateText: "Receipt printed successfully",
+              detail: "All receipt bytes were written successfully.",
+              progress: 1,
+              written: bytes.length,
+              total: bytes.length,
+              tone: "success",
+              done: true,
+              autoClose: true
+            });
             window.dispatchEvent(new CustomEvent("smartliving:receipt-printed", {
               detail: { receiptNumber: receipt.receiptNumber, paymentId: receipt.paymentId, printCount: receipt.printCount, transport: "web-serial-bluetooth" }
             }));
           } else {
             setPrintStatus("MP583 test receipt sent successfully.", "success");
+            showPrintAnimation({
+              stateText: "Receipt printed successfully",
+              detail: "The MP583 test payload finished printing.",
+              progress: 1,
+              written: bytes.length,
+              total: bytes.length,
+              tone: "success",
+              done: true,
+              autoClose: true
+            });
           }
         } catch (error) {
           const cancelled = error && error.name === "NotFoundError";
           const message = cancelled ? "Printer selection was cancelled." : (error.message || "Printing failed.");
           setPrinterStatus("error", "Printer unavailable", message);
           setPrintStatus(`${message} The payment receipt is still available.`, "error");
+          showPrintAnimation({
+            stateText: "Printing failed",
+            detail: message,
+            progress: 0,
+            written: 0,
+            total: 0,
+            tone: "error",
+            done: true
+          });
           if (!cancelled) {
             await Swal.fire({ icon: "error", title: "Could not print", text: message, confirmButtonColor: "#0d6efd" });
           }
@@ -1077,6 +1275,7 @@
       async function renderReceipt(receipt) {
         state.currentReceipt = receipt;
         state.lastReceipt = receipt;
+        hidePrintAnimation();
         el("lastReceiptBtn").disabled = false;
         el("receiptCopyBadge").classList.toggle("show", receipt.printCount > 0);
         setText("rBranchTop", receipt.branch);
@@ -1234,6 +1433,7 @@
       el("bluetoothPrintBtn").addEventListener("click", () => {
         if (state.currentReceipt) sendReceiptToPrinter(state.currentReceipt);
       });
+      el("printAnimDoneBtn").addEventListener("click", hidePrintAnimation);
 
       el("browserPrintBtn").addEventListener("click", () => {
         if (!state.currentReceipt) return;
