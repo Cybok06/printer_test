@@ -78,7 +78,7 @@
     .receipt-stage { background: #edf1f5; border-radius: 14px; padding: 18px 12px; display: flex; justify-content: center; }
 
     /* Screen preview of a 58 mm thermal receipt. */
-    .thermal-receipt { width: 58mm; min-height: 120mm; background: #fff; color: #000; padding: 4mm 3.2mm 6mm; font-family: "Courier New", ui-monospace, monospace; font-size: 9.5px; line-height: 1.28; box-shadow: 0 7px 20px rgba(15, 23, 42, .16); overflow-wrap: anywhere; }
+    .thermal-receipt { width: 58mm; min-height: 120mm; background: #fff; color: #000; padding: 4mm 3.2mm 6mm; font-family: "Courier New", ui-monospace, monospace; font-size: 9.5px; line-height: 1.28; box-shadow: 0 7px 20px rgba(15, 23, 42, .16); overflow-wrap: anywhere; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .receipt-company { text-align: center; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.05; font-weight: 900; letter-spacing: -.2px; }
     .receipt-tagline, .receipt-branch { text-align: center; font-size: 8.5px; margin-top: 3px; }
     .receipt-rule { border: 0; border-top: 1px dashed #000; margin: 7px 0; opacity: 1; }
@@ -91,6 +91,15 @@
     .receipt-amount { margin: 8px 0; padding: 7px 3px; border: 1.5px solid #000; text-align: center; }
     .receipt-amount .caption { font-size: 8px; font-weight: 700; }
     .receipt-amount .money { font-family: Arial, sans-serif; font-size: 21px; font-weight: 900; margin-top: 2px; }
+    .receipt-marks { border: 1.5px solid #000; padding: 7px 6px; margin: 8px 0; }
+    .receipt-marks-title { text-align: center; font-size: 9px; font-weight: 900; letter-spacing: .04em; }
+    .receipt-marks-rule { text-align: center; font-size: 7.7px; margin-top: 2px; }
+    .mark-grid { --boxes-per-row: 5; display: grid; grid-template-columns: repeat(var(--boxes-per-row), minmax(0, 1fr)); gap: 3px; margin-top: 7px; }
+    .mark-box { aspect-ratio: 1; border: 1.4px solid #000; display: grid; place-items: center; font-family: Arial, sans-serif; font-size: 12px; font-weight: 900; line-height: 1; background: #fff; }
+    .mark-box.marked::after { content: "✓"; }
+    .mark-box.partial { background: linear-gradient(135deg, #000 0 var(--partial-fill), #fff var(--partial-fill) 100%); }
+    .mark-box.partial::after { content: "P"; color: #fff; font-size: 7px; text-shadow: 0 0 1px #000; }
+    .receipt-marks-summary { text-align: center; font-size: 8px; font-weight: 800; margin-top: 6px; }
     .receipt-qr { display: flex; justify-content: center; margin: 7px auto 4px; }
     .receipt-qr canvas, .receipt-qr img { width: 28mm !important; height: 28mm !important; image-rendering: pixelated; }
     .receipt-center { text-align: center; }
@@ -257,7 +266,17 @@
               <label for="previouslyPaid">Previously Paid (GHS)</label>
               <input id="previouslyPaid" class="form-control money-input" type="number" min="0" step="0.01" value="1260.00" required>
             </div>
+            <div class="col-md-6">
+              <label for="cardValue">Daily Card Row Value (GHS)</label>
+              <input id="cardValue" class="form-control money-input" type="number" min="0.01" step="0.01" value="10.00" required>
+            </div>
+            <div class="col-md-6">
+              <label for="boxValue">Value Per Box (GHS)</label>
+              <input id="boxValue" class="form-control money-input" type="number" min="0.01" step="0.01" value="2.00" required>
+            </div>
           </div>
+
+          <div id="cardRuleSummary" class="subtle-text mt-2">Digital card: GHS 10.00 per row · 5 boxes · GHS 2.00 per box</div>
 
           <div class="summary-cards">
             <div class="summary-card">
@@ -302,7 +321,7 @@
             <div class="col-md-6">
               <label for="branchName">Branch</label>
               <select id="branchName" class="form-select">
-                <option>Accra Central (HQ)</option>
+                <option>Kaneshie (Head Office)</option>
                 <option>Dome</option>
                 <option>Nsawam</option>
                 <option>Tema New Town</option>
@@ -356,15 +375,13 @@
                 <div id="receiptCopyBadge" class="receipt-copy-badge">REPRINT COPY</div>
                 <div class="receipt-company">SMART LIVING</div>
                 <div class="receipt-company">EMPORIUM PLUS</div>
-                <div class="receipt-tagline">Essential living made affordable</div>
-                <div id="rBranchTop" class="receipt-branch">Accra Central (HQ)</div>
+                <div class="receipt-tagline">Powering Homes, Simplifying Lives.</div>
+                <div class="receipt-branch">Head Office: Kaneshie</div>
+                <div id="rBranchTop" class="receipt-branch">Kaneshie (Head Office)</div>
 
                 <hr class="receipt-rule">
                 <div class="receipt-center fw-bold">PAYMENT RECEIPT</div>
                 <div class="receipt-row"><span class="key">Receipt:</span><span id="rReceiptNo" class="val">—</span></div>
-                <div class="receipt-row"><span class="key">Date:</span><span id="rDate" class="val">—</span></div>
-                <div class="receipt-row"><span class="key">Time:</span><span id="rTime" class="val">—</span></div>
-                <div class="receipt-row"><span class="key">Payment ID:</span><span id="rPaymentId" class="val">—</span></div>
 
                 <hr class="receipt-rule">
                 <div class="receipt-block"><span class="key">CUSTOMER</span><span id="rCustomerName" class="val">—</span></div>
@@ -373,8 +390,9 @@
                 <div class="receipt-row"><span class="key">Card No:</span><span id="rAccount" class="val">—</span></div>
 
                 <hr class="receipt-rule">
-                <div class="receipt-block"><span class="key">PRODUCT / ACCOUNT</span><span id="rProduct" class="val">—</span></div>
-                <div class="receipt-row"><span class="key">Payment type:</span><span id="rPaymentType" class="val">—</span></div>
+                <div class="receipt-block"><span class="key">PRODUCT</span><span id="rProduct" class="val">—</span></div>
+                <div class="receipt-row"><span class="key">Date:</span><span id="rDate" class="val">—</span></div>
+                <div class="receipt-row"><span class="key">Time:</span><span id="rTime" class="val">—</span></div>
                 <div class="receipt-row"><span class="key">Method:</span><span id="rMethod" class="val">—</span></div>
 
                 <div class="receipt-amount">
@@ -382,19 +400,27 @@
                   <div id="rAmount" class="money">GHS 0.00</div>
                 </div>
 
+                <section id="receiptMarksSection" class="receipt-marks">
+                  <div class="receipt-marks-title">DIGITAL CARD MARKS</div>
+                  <div id="rMarkRule" class="receipt-marks-rule">1 box = GHS 2.00 · 5 boxes = GHS 10.00</div>
+                  <div id="rMarkGrid" class="mark-grid" aria-label="Digitally marked payment boxes"></div>
+                  <div id="rMarkedBoxSummary" class="receipt-marks-summary">0 boxes marked</div>
+                </section>
+
                 <div class="receipt-row"><span class="key">Previously paid:</span><span id="rPreviouslyPaid" class="val">GHS 0.00</span></div>
                 <div class="receipt-row"><span class="key">Total paid:</span><span id="rTotalPaid" class="val">GHS 0.00</span></div>
                 <div class="receipt-row"><span class="key">Amount remaining:</span><span id="rAmountLeft" class="val">GHS 0.00</span></div>
 
                 <hr class="receipt-rule">
-                <div class="receipt-row"><span class="key">Agent:</span><span id="rAgentName" class="val">—</span></div>
-                <div class="receipt-row"><span class="key">Agent ID:</span><span id="rAgentId" class="val">—</span></div>
+                <div class="receipt-row"><span class="key">Agent:</span><span id="rAgentLine" class="val">—</span></div>
 
                 <div id="receiptQr" class="receipt-qr" aria-label="Receipt QR code"></div>
                 <div class="receipt-center receipt-small fw-bold">SCAN FOR PAYMENT DETAILS</div>
                 <div class="receipt-center receipt-small mt-1">Keep this receipt for reference.</div>
                 <hr class="receipt-rule">
                 <div class="receipt-center receipt-small">Thank you for choosing Smart Living.</div>
+                <div class="receipt-center receipt-small fw-bold mt-1">053-003-9625</div>
+                <div class="receipt-center receipt-small">Head Office: Kaneshie</div>
                 <div class="receipt-center receipt-small mt-1">Computer-generated receipt</div>
               </article>
             </div>
@@ -519,10 +545,16 @@
         const total = numberValue("productTotal");
         const paidBefore = numberValue("previouslyPaid");
         const amount = numberValue("amount");
+        const cardValue = numberValue("cardValue");
+        const boxValue = numberValue("boxValue");
         const remaining = state.susuMode ? 0 : Math.max(total - paidBefore - amount, 0);
         el("paidBeforeSummary").textContent = money(paidBefore);
         el("thisPaymentSummary").textContent = money(amount);
         el("amountLeftSummary").textContent = state.susuMode ? "N/A" : money(remaining);
+        if (cardValue > 0 && boxValue > 0) {
+          const boxesPerRow = Math.max(1, Math.round(cardValue / boxValue));
+          el("cardRuleSummary").textContent = `Digital card: GHS ${money(cardValue)} per row · ${boxesPerRow} boxes · GHS ${money(boxValue)} per box`;
+        }
       }
 
       function setPrinterStatus(type, title, detail) {
@@ -662,6 +694,112 @@
         return `${left}\n${wrapText(right, width).map((line) => line.padStart(Math.min(width, line.length + 2))).join("\n")}`;
       }
 
+      function getMarkingStats(amount, cardValue, boxValue) {
+        const safeCardValue = Math.max(Number(cardValue) || 0, .01);
+        const safeBoxValue = Math.max(Number(boxValue) || 0, .01);
+        const boxesPerRow = Math.max(1, Math.round(safeCardValue / safeBoxValue));
+        const fullBoxes = Math.floor((Number(amount) + 1e-8) / safeBoxValue);
+        const remainderValue = Math.max(0, Number(amount) - fullBoxes * safeBoxValue);
+        const partialRatio = remainderValue > .005 ? Math.min(1, remainderValue / safeBoxValue) : 0;
+        const occupiedBoxes = fullBoxes + (partialRatio > 0 ? 1 : 0);
+        const rows = Math.max(1, Math.ceil(occupiedBoxes / boxesPerRow));
+        return {
+          cardValue: safeCardValue,
+          boxValue: safeBoxValue,
+          boxesPerRow,
+          fullBoxes,
+          remainderValue,
+          partialRatio,
+          occupiedBoxes,
+          rows,
+          totalSlots: rows * boxesPerRow
+        };
+      }
+
+      function markingSummary(stats) {
+        const fullLabel = `${stats.fullBoxes} ${stats.fullBoxes === 1 ? "box" : "boxes"} marked`;
+        if (!stats.partialRatio) return fullLabel;
+        return `${fullLabel} + 1 partial box (GHS ${money(stats.remainderValue)})`;
+      }
+
+      function renderMarkGrid(receipt) {
+        const section = el("receiptMarksSection");
+        section.classList.toggle("d-none", receipt.susuMode);
+        if (receipt.susuMode) return;
+
+        const stats = receipt.marking;
+        const grid = el("rMarkGrid");
+        grid.replaceChildren();
+        grid.style.setProperty("--boxes-per-row", String(stats.boxesPerRow));
+        for (let index = 0; index < stats.totalSlots; index += 1) {
+          const box = document.createElement("span");
+          box.className = "mark-box";
+          if (index < stats.fullBoxes) {
+            box.classList.add("marked");
+            box.setAttribute("aria-label", `Marked box ${index + 1}`);
+          } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
+            box.classList.add("partial");
+            box.style.setProperty("--partial-fill", `${Math.round(stats.partialRatio * 100)}%`);
+            box.setAttribute("aria-label", `Partially marked box worth GHS ${money(stats.remainderValue)}`);
+          } else {
+            box.setAttribute("aria-label", `Unmarked box ${index + 1}`);
+          }
+          grid.appendChild(box);
+        }
+        setText("rMarkRule", `1 box = GHS ${money(stats.boxValue)} · ${stats.boxesPerRow} boxes = GHS ${money(stats.cardValue)}`);
+        setText("rMarkedBoxSummary", markingSummary(stats));
+      }
+
+      function createMarkGridCanvas(stats) {
+        const width = 320;
+        const sidePadding = 14;
+        const gap = 6;
+        const cellSize = Math.max(20, Math.floor((width - sidePadding * 2 - gap * (stats.boxesPerRow - 1)) / stats.boxesPerRow));
+        const gridWidth = cellSize * stats.boxesPerRow + gap * (stats.boxesPerRow - 1);
+        const gridHeight = cellSize * stats.rows + gap * (stats.rows - 1);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = gridHeight + 28;
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.strokeStyle = "#000000";
+        context.lineWidth = 2;
+        context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+
+        const startX = Math.floor((width - gridWidth) / 2);
+        const startY = 14;
+        for (let index = 0; index < stats.totalSlots; index += 1) {
+          const row = Math.floor(index / stats.boxesPerRow);
+          const column = index % stats.boxesPerRow;
+          const x = startX + column * (cellSize + gap);
+          const y = startY + row * (cellSize + gap);
+          context.lineWidth = 2;
+          context.strokeRect(x, y, cellSize, cellSize);
+
+          if (index < stats.fullBoxes) {
+            const inset = Math.max(6, Math.floor(cellSize * .2));
+            context.lineWidth = 3;
+            context.beginPath();
+            context.moveTo(x + inset, y + inset);
+            context.lineTo(x + cellSize - inset, y + cellSize - inset);
+            context.moveTo(x + cellSize - inset, y + inset);
+            context.lineTo(x + inset, y + cellSize - inset);
+            context.stroke();
+          } else if (index === stats.fullBoxes && stats.partialRatio > 0) {
+            const fillHeight = Math.max(2, Math.round((cellSize - 4) * stats.partialRatio));
+            context.fillStyle = "#000000";
+            context.fillRect(x + 2, y + cellSize - 2 - fillHeight, cellSize - 4, fillHeight);
+            context.fillStyle = "#ffffff";
+            context.font = `bold ${Math.max(9, Math.floor(cellSize * .2))}px Arial`;
+            context.textAlign = "center";
+            context.textBaseline = "bottom";
+            context.fillText("PART", x + cellSize / 2, y + cellSize - 4);
+          }
+        }
+        return canvas;
+      }
+
       async function createQrCanvas(payload, innerSize = 144, quietZone = 12) {
         if (!window.QRCode) throw new Error("QR generator did not load. Check the internet connection and reload.");
         const holder = el("qrWorkspace");
@@ -748,7 +886,8 @@
         command(ESC, 0x45, 0x01);           // Bold on
         text("EMPORIUM PLUS\n");
         command(ESC, 0x45, 0x00);           // Bold off
-        text("Essential living made affordable\n");
+        text("Powering Homes,\nSimplifying Lives.\n");
+        text("Head Office: Kaneshie\n");
         wrapText(receipt.branch).forEach((value) => text(`${centered(value)}\n`));
         text(`${line}\n`);
         command(ESC, 0x45, 0x01);
@@ -756,10 +895,8 @@
         command(ESC, 0x45, 0x00);
         command(ESC, 0x61, 0x00);           // Left
         text(`${pairLine("Receipt:", receipt.receiptNumber)}\n`);
-        text(`${pairLine("Date:", receipt.dateLabel)}\n`);
-        text(`${pairLine("Time:", receipt.time)}\n`);
-        text(`${pairLine("Payment ID:", receipt.paymentId)}\n`);
         text(`${line}\n`);
+        text("CUSTOMER\n");
         command(ESC, 0x45, 0x01);
         wrapText(receipt.customerName).forEach((value) => text(`${value}\n`));
         command(ESC, 0x45, 0x00);
@@ -767,11 +904,12 @@
         text(`${pairLine("Phone:", receipt.customerPhone)}\n`);
         text(`${pairLine("Card No:", receipt.accountNumber || "N/A")}\n`);
         text(`${line}\n`);
-        text("PRODUCT / ACCOUNT\n");
+        text("PRODUCT\n");
         command(ESC, 0x45, 0x01);
         wrapText(receipt.productName).forEach((value) => text(`${value}\n`));
         command(ESC, 0x45, 0x00);
-        text(`${pairLine("Type:", receipt.paymentType)}\n`);
+        text(`${pairLine("Date:", receipt.dateLabel)}\n`);
+        text(`${pairLine("Time:", receipt.time)}\n`);
         text(`${pairLine("Method:", receipt.method)}\n`);
         text(`${line}\n`);
         command(ESC, 0x61, 0x01);
@@ -780,12 +918,27 @@
         text(`GHS ${money(receipt.amount)}\n`);
         command(GS, 0x21, 0x00);
         command(ESC, 0x61, 0x00);
+
+        if (!receipt.susuMode && receipt.marking) {
+          text(`${line}\n`);
+          command(ESC, 0x61, 0x01);
+          command(ESC, 0x45, 0x01);
+          text("DIGITAL CARD MARKS\n");
+          command(ESC, 0x45, 0x00);
+          text(`1 box = GHS ${money(receipt.marking.boxValue)}\n`);
+          text(`${receipt.marking.boxesPerRow} boxes = GHS ${money(receipt.marking.cardValue)}\n`);
+          const markCanvas = createMarkGridCanvas(receipt.marking);
+          parts.push(canvasToEscPosRaster(markCanvas));
+          text(`\n${markingSummary(receipt.marking)}\n`);
+          command(ESC, 0x61, 0x00);
+        }
+
+        text(`${line}\n`);
         text(`${pairLine("Previously:", `GHS ${money(receipt.previouslyPaid)}`)}\n`);
         text(`${pairLine("Total paid:", `GHS ${money(receipt.totalPaid)}`)}\n`);
         text(`${pairLine("Remaining:", receipt.susuMode ? "N/A" : `GHS ${money(receipt.amountLeft)}`)}\n`);
         text(`${line}\n`);
-        text(`${pairLine("Agent:", receipt.agentName)}\n`);
-        text(`${pairLine("Agent ID:", receipt.agentId || "N/A")}\n`);
+        text(`${pairLine("Agent:", `${receipt.agentName} (${receipt.agentId || "N/A"})`)}\n`);
         text(`${line}\n`);
 
         const qrCanvas = await createQrCanvas(receipt.qrPayload, 144, 12);
@@ -795,6 +948,10 @@
         text("Keep this receipt for reference.\n");
         text(`${line}\n`);
         text("Thank you for choosing\nSmart Living.\n");
+        command(ESC, 0x45, 0x01);
+        text("053-003-9625\n");
+        command(ESC, 0x45, 0x00);
+        text("Head Office: Kaneshie\n");
         text("Computer-generated receipt\n");
         command(ESC, 0x64, 0x05);           // Feed 5 lines; printer is manual-tear
 
@@ -860,26 +1017,28 @@
       }
 
       function createQrPayload(receipt) {
-        return [
-          "SMART LIVING PAYMENT RECEIPT",
-          `Receipt: ${receipt.receiptNumber}`,
-          `Payment ID: ${receipt.paymentId}`,
-          `Customer: ${receipt.customerName}`,
-          `Customer ID: ${receipt.customerId}`,
-          `Product: ${receipt.productName}`,
-          `Amount: GHS ${money(receipt.amount)}`,
-          `Total Paid: GHS ${money(receipt.totalPaid)}`,
-          `Remaining: ${receipt.susuMode ? "N/A" : `GHS ${money(receipt.amountLeft)}`}`,
-          `Paid: ${receipt.dateLabel} ${receipt.time}`,
-          `Agent: ${receipt.agentName} (${receipt.agentId || "N/A"})`,
-          `Branch: ${receipt.branch}`
-        ].join("\n");
+        const lines = [
+          "SMART LIVING RECEIPT",
+          `Receipt ${receipt.receiptNumber}`,
+          `Customer ${receipt.customerName} [${receipt.customerId}]`,
+          `Product ${receipt.productName}`,
+          `Paid GHS ${money(receipt.amount)} on ${receipt.dateLabel} ${receipt.time}`,
+          `Agent ${receipt.agentName} [${receipt.agentId || "N/A"}]`,
+          `Branch ${receipt.branch}`
+        ];
+        if (!receipt.susuMode && receipt.marking) {
+          lines.splice(5, 0, `Marks ${markingSummary(receipt.marking)}; GHS ${money(receipt.marking.boxValue)}/box`);
+        }
+        lines.push("Company 053-003-9625");
+        return lines.join("\n");
       }
 
       function collectReceiptData() {
         const amount = numberValue("amount");
         const previouslyPaid = numberValue("previouslyPaid");
         const total = numberValue("productTotal");
+        const cardValue = numberValue("cardValue");
+        const boxValue = numberValue("boxValue");
         const now = new Date();
         const receipt = {
           receiptNumber: makeId("SLR"),
@@ -904,6 +1063,7 @@
           agentId: el("agentId").value.trim(),
           susuMode: state.susuMode,
           smsEnabled: state.smsEnabled,
+          marking: state.susuMode ? null : getMarkingStats(amount, cardValue, boxValue),
           printCount: 0
         };
         receipt.qrPayload = createQrPayload(receipt);
@@ -923,20 +1083,18 @@
         setText("rReceiptNo", receipt.receiptNumber);
         setText("rDate", receipt.dateLabel);
         setText("rTime", receipt.time);
-        setText("rPaymentId", receipt.paymentId);
         setText("rCustomerName", receipt.customerName);
         setText("rCustomerId", receipt.customerId);
         setText("rCustomerPhone", receipt.customerPhone);
         setText("rAccount", receipt.accountNumber || "N/A");
         setText("rProduct", receipt.productName);
-        setText("rPaymentType", receipt.paymentType);
         setText("rMethod", receipt.method);
         setText("rAmount", `GHS ${money(receipt.amount)}`);
         setText("rPreviouslyPaid", `GHS ${money(receipt.previouslyPaid)}`);
         setText("rTotalPaid", `GHS ${money(receipt.totalPaid)}`);
         setText("rAmountLeft", receipt.susuMode ? "N/A" : `GHS ${money(receipt.amountLeft)}`);
-        setText("rAgentName", receipt.agentName);
-        setText("rAgentId", receipt.agentId || "N/A");
+        setText("rAgentLine", `${receipt.agentName} (${receipt.agentId || "N/A"})`);
+        renderMarkGrid(receipt);
         el("receiptSummary").textContent = `${receipt.customerName} paid GHS ${money(receipt.amount)} · ${receipt.receiptNumber}`;
         el("bluetoothPrintBtn").textContent = receipt.printCount > 0 ? "Reprint via MP583 Bluetooth" : "Print via MP583 Bluetooth";
         setPrintStatus("Ready. Printing failure will not remove the payment.", "info");
@@ -967,7 +1125,18 @@
         if (!state.susuMode) {
           const total = numberValue("productTotal");
           const paid = numberValue("previouslyPaid");
+          const cardValue = numberValue("cardValue");
+          const boxValue = numberValue("boxValue");
           const leftBefore = Math.max(total - paid, 0);
+          const boxesPerRow = cardValue / boxValue;
+          if (cardValue <= 0 || boxValue <= 0 || cardValue < boxValue || Math.abs(boxesPerRow - Math.round(boxesPerRow)) > .0001) {
+            Swal.fire({
+              icon: "warning",
+              title: "Invalid card marking values",
+              text: "The card row value must divide evenly by the box value. Example: GHS 10 ÷ GHS 2 = 5 boxes."
+            });
+            return false;
+          }
           if (leftBefore <= 0) {
             Swal.fire({ icon: "warning", title: "Product completed", text: "This product has no amount remaining." });
             return false;
